@@ -60,16 +60,19 @@ public class BulletShooter : MonoBehaviour
 	    {
 	        float angle = startAngle + i * angleStep;
 
-	        // 计算旋转后的方向（绕 Y 轴旋转）
+	        // 计算旋转后的方向（绕 z 轴旋转）
 	        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	        Vector3 bulletDir = rotation * direction.normalized;
+            print(rotation);
+            print(direction.normalized);
+            print(bulletDir);
 
 	        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-	        Rigidbody rb = bullet.GetComponent<Rigidbody>();
-	        if (rb != null)
-	        {
-	            rb.velocity = bulletDir * bulletSpeed;
-	        }
+            Bullet bulletScript = bullet.GetComponent<Bullet>();
+            if (bulletScript != null)
+            {
+                bulletScript.Initialize(bulletDir, 10, 5);
+            }
 	    }
 	}
 }

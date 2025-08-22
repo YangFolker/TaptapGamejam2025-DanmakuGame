@@ -245,7 +245,7 @@ PrefabInstance:
     - target: {fileID: 1199603286730012532, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
       propertyPath: bulletPrefab
       value: 
-      objectReference: {fileID: 2460300112333409849, guid: 1d6d60a95388d144d813f471081cb6fe, type: 3}
+      objectReference: {fileID: 7044126097493294748, guid: 506965429c6c26642a58e393a2c6f0a0, type: 3}
     - target: {fileID: 2302674576083854369, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.730805
@@ -286,9 +286,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5416318166240747509, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5782798797599313058, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
       propertyPath: m_Name
       value: PlayerObject (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5782798797599313058, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8781499438034302771, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -327,6 +339,10 @@ PrefabInstance:
       propertyPath: IsMainPlayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1199603286730012532, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
+      propertyPath: bulletPrefab
+      value: 
+      objectReference: {fileID: 867248832970665034, guid: e3049194b67252142bbe46e86d455955, type: 3}
     - target: {fileID: 2302674576083854369, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.54928136
@@ -367,9 +383,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 180
       objectReference: {fileID: 0}
+    - target: {fileID: 5416318166240747509, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 5782798797599313058, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
       propertyPath: m_Name
       value: PlayerObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 5782798797599313058, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8781499438034302771, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
