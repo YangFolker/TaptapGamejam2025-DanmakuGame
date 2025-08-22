@@ -15,7 +15,7 @@ public class BulletShooter : MonoBehaviour
 
     [Header("Bullet Settings")]
     public GameObject bulletPrefab;
-    public int bulletCount = 1;
+    public int bulletCount = 10;
     public Vector3 direction = Vector3.forward;
     public float bulletSpeed = 10f;
 
@@ -41,15 +41,35 @@ public class BulletShooter : MonoBehaviour
     }
 
     void FireBullets()
-    {
-        for (int i = 0; i < bulletCount; i++)
-        {
-            GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-            Rigidbody rb = bullet.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.velocity = direction.normalized * bulletSpeed;
-            }
-        }
-    }
+	{
+	    float angleStep;
+	    float startAngle;
+
+	    if (bulletCount <= 10)
+	    {
+	        angleStep = 10f;
+	        startAngle = -(angleStep * (bulletCount - 1) / 2f);
+	    }
+	    else
+	    {
+	        angleStep = 100f / (bulletCount - 1);
+	        startAngle = -50f; // 100° 扇形的一半
+	    }
+
+	    for (int i = 0; i < bulletCount; i++)
+	    {
+	        float angle = startAngle + i * angleStep;
+
+	        // 计算旋转后的方向（绕 Y 轴旋转）
+	        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+	        Vector3 bulletDir = rotation * direction.normalized;
+
+	        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+	        Rigidbody rb = bullet.GetComponent<Rigidbody>();
+	        if (rb != null)
+	        {
+	            rb.velocity = bulletDir * bulletSpeed;
+	        }
+	    }
+	}
 }

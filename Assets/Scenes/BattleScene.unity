@@ -316,6 +316,10 @@ PrefabInstance:
       value: 260
       objectReference: {fileID: 0}
     - target: {fileID: 1199603286730012532, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
+      propertyPath: bulletCount
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1199603286730012532, guid: feab34368416a994ca6ecb9980c5a581, type: 3}
       propertyPath: direction.y
       value: 1
       objectReference: {fileID: 0}
