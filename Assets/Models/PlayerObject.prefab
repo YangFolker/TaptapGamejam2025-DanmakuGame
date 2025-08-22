@@ -133,6 +133,11 @@ MonoBehaviour:
   moveSpeed: 5
   leftKey: 97
   rightKey: 100
+  fireKey: 115
+  bulletPrefab: {fileID: 2460300112333409849, guid: 1d6d60a95388d144d813f471081cb6fe, type: 3}
+  bulletCount: 1
+  direction: {x: 0, y: -1, z: 0}
+  bulletSpeed: 10
 --- !u!1 &8781499438034302771
 GameObject:
   m_ObjectHideFlags: 0
