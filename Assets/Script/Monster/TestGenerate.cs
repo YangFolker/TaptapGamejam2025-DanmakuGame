@@ -9,7 +9,7 @@ public class TestGenerate : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            pool.GetMonster(0,pool.StartPos);
+            pool.GetMonster(0);
         }
     }
 }

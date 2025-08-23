@@ -9,6 +9,13 @@ public class Bullet : MonoBehaviour
 
     private Vector3 direction;  // 子弹的运动方向
 
+    public float explosionRadius = 0.5f; //子弹爆炸半径
+    public int explosionDamage = 10;
+
+    public float explosionDuration = 2f;  // 爆炸持续时间
+    public GameObject explosionPrefab;   // 爆炸预制体（圆形）
+
+
     // 初始化子弹的方向和速度
     public void Initialize(Vector3 direction, float speed, float lifetime)
     {
@@ -25,15 +32,22 @@ public class Bullet : MonoBehaviour
         // 子弹的匀速直线运动
         transform.Translate(direction * speed * Time.deltaTime);
     }
-    void OnCollisionEnter2D(Collision2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
+        // 检查子弹与其他物体的碰撞
         if (collision.gameObject.layer == LayerMask.NameToLayer("Bullet"))
         {
-            Explode();
-            Destroy(gameObject);  // 销毁子弹
+            if (collision.gameObject.GetComponent<Bullet>().bulletType != this.bulletType)
+            {
+                Destroy(gameObject);  // 销毁子弹
+                Destroy(collision.gameObject);  // 销毁碰撞的子弹
+                Explode();
+            }
+
         }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Monster"))  // 确保碰撞的是怪物
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("Monster"))
         {
+            // 确保碰撞的是怪物
             Monster monster = collision.gameObject.GetComponent<Monster>();
             if (monster != null)
             {
@@ -45,16 +59,123 @@ public class Bullet : MonoBehaviour
                     Destroy(gameObject);  // 销毁子弹
                 }
             }
-
+            else
+            {
+                Debug.LogWarning("Monster component not found on the collided object.");
+            }
         }
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+        else if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            PlayerHealth.instance.TakeDamage(10,collision.gameObject.GetComponent<BulletShooter>().IsMainPlayer);
-            Destroy(gameObject);  // 销毁子弹
+            // 确保碰撞的是玩家
+            BulletShooter bulletShooter = collision.gameObject.GetComponent<BulletShooter>();
+            if (bulletShooter != null)
+            {
+                //print("collision player!!!");
+                PlayerHealth.instance?.TakeDamage(10, bulletShooter.IsMainPlayer);
+                Destroy(gameObject);  // 销毁子弹
+            }
+            else
+            {
+                Debug.LogWarning("BulletShooter component not found on the collided player.");
+            }
         }
     }
+
+    // void OnTriggerEnter2D(Collider2D collision)
+    // {
+    //     if (collision.gameObject.layer == LayerMask.NameToLayer("Bullet"))
+    //     {
+    //         Explode();
+    //         Destroy(gameObject);  // 销毁子弹
+    //     }
+    //     if (collision.gameObject.layer == LayerMask.NameToLayer("Monster"))  // 确保碰撞的是怪物
+    //     {
+    //         Monster monster = collision.gameObject.GetComponent<Monster>();
+    //         if (monster != null)
+    //         {
+    //             // 判断子弹和怪物的类型是否一致
+    //             if (monster.monsterId == bulletType)
+    //             {
+    //                 // 如果类型一致，则触发怪物死亡
+    //                 monster.Die();
+    //                 Destroy(gameObject);  // 销毁子弹
+    //             }
+    //         }
+
+    //     }
+    //     if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+    //     {
+    //         PlayerHealth.instance?.TakeDamage(10,collision.gameObject.GetComponent<BulletShooter>().IsMainPlayer);
+    //         Destroy(gameObject);  // 销毁子弹
+    //     }
+    // }
+    // void OnCollisionEnter2D(Collision2D collision)
+    // {
+    //     if (collision.gameObject.layer == LayerMask.NameToLayer("Bullet"))
+    //     {
+    //         Explode();
+    //         Destroy(gameObject);  // 销毁子弹
+    //     }
+    //     if (collision.gameObject.layer == LayerMask.NameToLayer("Monster"))  // 确保碰撞的是怪物
+    //     {
+    //         Monster monster = collision.gameObject.GetComponent<Monster>();
+    //         if (monster != null)
+    //         {
+    //             // 判断子弹和怪物的类型是否一致
+    //             if (monster.monsterId == bulletType)
+    //             {
+    //                 // 如果类型一致，则触发怪物死亡
+    //                 monster.Die();
+    //                 Destroy(gameObject);  // 销毁子弹
+    //             }
+    //         }
+
+    //     }
+    //     if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
+    //     {
+    //         PlayerHealth.instance.TakeDamage(10,collision.gameObject.GetComponent<BulletShooter>().IsMainPlayer);
+    //         Destroy(gameObject);  // 销毁子弹
+    //     }
+    // }
     void Explode()
     {
-        // 子弹爆炸的逻辑
+        TriggerExplosion(transform.position);
+        // 找到爆炸范围内的所有怪物
+        Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
+        foreach (Collider2D hitCollider in hitColliders)
+        {
+            Debug.Log(hitCollider.name);
+        }
+
+        foreach (Collider2D hitCollider in hitColliders)
+        {
+            if (hitCollider.gameObject.layer == LayerMask.NameToLayer("Monster"))
+            {
+                Monster monster = hitCollider.GetComponent<Monster>();
+                if (monster != null)
+                {
+                    // 对怪物造成伤害
+                    monster.TakeDamage(2);
+                }
+            }
+            if (hitCollider.gameObject.layer == LayerMask.NameToLayer("Player"))
+            {
+                BulletShooter bulletShooter = hitCollider.GetComponent<BulletShooter>();
+                PlayerHealth.instance.TakeDamage(10, bulletShooter.IsMainPlayer);
+            }
+
+        }
+    }
+
+    public void TriggerExplosion(Vector3 position)
+    {
+        // 创建爆炸效果
+        GameObject explosion = Instantiate(explosionPrefab, position, Quaternion.identity);
+        
+        // 设置爆炸的大小（可选）
+        explosion.transform.localScale = new Vector3(explosionRadius,explosionRadius,explosionRadius);  // 示例，设置为 2 倍大小
+        
+        // 在 explosionDuration 秒后销毁爆炸效果
+        Destroy(explosion, explosionDuration);
     }
 }

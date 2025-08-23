@@ -8,7 +8,7 @@ public class ExitBtn : MonoBehaviour
     PanelMainUI panelMainUI;
     public Text textAsset;
 
-    public void Init(PanelMainUI panelMain,string text = null)
+    public void Init(PanelMainUI panelMain, string text = null)
     {
         GetComponent<Button>().onClick.AddListener(ExitEvent);
         panelMainUI = panelMain;
@@ -19,7 +19,12 @@ public class ExitBtn : MonoBehaviour
     }
     private void ExitEvent()
     {
-        Debug.Log("ExitEvent");
+        // 在编辑器中停止播放
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        // 在实际的构建版本中退出
         Application.Quit();
+#endif
     }
 }

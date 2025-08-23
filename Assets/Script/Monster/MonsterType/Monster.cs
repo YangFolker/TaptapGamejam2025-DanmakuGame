@@ -51,7 +51,7 @@ public class Monster : MonoBehaviour
 
         // 这里你可以播放死亡动画，或者掉落物品
         // 暂时直接禁用怪物，交还对象池
-        MonsterPool.Instance.ReturnMonster(monsterId,gameObject);
+        MonsterPool.instance.ReturnMonster(monsterId,gameObject);
 
         // 如果你有对象池管理类，可以在这里调用 ReturnMonster()
         // 比如：

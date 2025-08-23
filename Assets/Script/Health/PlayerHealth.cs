@@ -5,10 +5,6 @@ using DG.Tweening;
 public class PlayerHealth : MonoBehaviour
 {
     public static PlayerHealth instance;  // 单例实例
-
-    public int maxHealth = 100;  // 最大生命值
-    private int currentHealth;   // 当前生命值
-
     public Image healthBar;      // 血条 Image（需要在 Inspector 中拖拽进去）
     public RectTransform healthMarker;  // 血条浮标（需要在 Inspector 中拖拽进去）
 
@@ -16,7 +12,7 @@ public class PlayerHealth : MonoBehaviour
 
     void Awake()
     {
-        offect = healthBar.GetComponent<RectTransform>().rect.height/2;
+        offect = healthBar.GetComponent<RectTransform>().rect.height / 2;
         // 确保单例初始化
         if (instance == null)
         {
@@ -31,10 +27,10 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
-        currentHealth = maxHealth/2;  // 初始化当前血量
+        GameManger.instance.currentHealth = GameManger.instance.maxHealth/2;  // 初始化当前血量
 
         // 初始化浮标位置
-        float initialPositionY = Mathf.Lerp(-offect, offect, (float)currentHealth / maxHealth);  // 根据初始血量计算浮标位置
+        float initialPositionY = Mathf.Lerp(-offect, offect, (float)GameManger.instance.currentHealth / GameManger.instance.maxHealth);  // 根据初始血量计算浮标位置
         healthMarker.anchoredPosition = new Vector2(healthMarker.anchoredPosition.x, initialPositionY);  // 设置浮标初始位置
     }
 
@@ -47,17 +43,21 @@ public class PlayerHealth : MonoBehaviour
     {
         if (isUp)
         {
-            currentHealth += amount;  // 回血
+            GameManger.instance.currentHealth += amount;  // 回血
         }
         else
         {
-            currentHealth -= amount;  // 掉血
+            GameManger.instance.currentHealth -= amount;  // 掉血
+        }
+        if (GameManger.instance.currentHealth <= 0 || GameManger.instance.currentHealth >= GameManger.instance.maxHealth)
+        {
+            GameManger.instance.GameOver();
         }
 
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);  // 确保血量不小于0，也不大于最大血量
+        GameManger.instance.currentHealth = Mathf.Clamp(GameManger.instance.currentHealth, 0, GameManger.instance.maxHealth);  // 确保血量不小于0，也不大于最大血量
 
         // 计算血条填充量（比例）
-        float targetFillAmount = (float)currentHealth / maxHealth;
+        float targetFillAmount = (float)GameManger.instance.currentHealth / GameManger.instance.maxHealth;
 
         // 使用 DOTween 平滑过渡血条变化
         healthBar.DOFillAmount(targetFillAmount, 0.5f);
