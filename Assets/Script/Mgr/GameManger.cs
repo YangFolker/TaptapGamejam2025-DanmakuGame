@@ -6,7 +6,8 @@ public class GameManger : MonoBehaviour
 {
 
     public int maxHealth = 100;  // 最大生命值
-    public int currentHealth;   // 当前生命值
+    public int currentHealth;   // 上方当前生命值
+    public int currentHealth_down;//下方当前生命值
     public int MainNum = 0;
     public static GameManger instance;
 

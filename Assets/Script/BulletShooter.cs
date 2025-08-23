@@ -63,9 +63,9 @@ public class BulletShooter : MonoBehaviour
 	        // 计算旋转后的方向（绕 z 轴旋转）
 	        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	        Vector3 bulletDir = rotation * direction.normalized;
-            //print(rotation);
-            //print(direction.normalized);
-            //print(bulletDir);
+            print(rotation);
+            print(direction.normalized);
+            print(bulletDir);
             GameObject bullet;
             if (transform.position.y < 0)
             {
@@ -80,7 +80,6 @@ public class BulletShooter : MonoBehaviour
                 bullet = null;
                 Debug.Log("Error: The y position of the shooter is 0.");
             }
-            bullet.layer = LayerMask.NameToLayer("Bullet");
             Debug.Log(bullet.name);
             Bullet bulletScript = bullet.GetComponent<Bullet>();
             if (bulletScript != null)

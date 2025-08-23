@@ -52,7 +52,7 @@ public class Bullet : MonoBehaviour
             if (monster != null)
             {
                 // 判断子弹和怪物的类型是否一致
-                if (monster.monsterId == bulletType)
+                if (monster.monsterType == bulletType)
                 {
                     // 如果类型一致，则触发怪物死亡
                     monster.Die();
@@ -70,7 +70,6 @@ public class Bullet : MonoBehaviour
             BulletShooter bulletShooter = collision.gameObject.GetComponent<BulletShooter>();
             if (bulletShooter != null)
             {
-                //print("collision player!!!");
                 PlayerHealth.instance?.TakeDamage(10, bulletShooter.IsMainPlayer);
                 Destroy(gameObject);  // 销毁子弹
             }

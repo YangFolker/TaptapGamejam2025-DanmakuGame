@@ -7,6 +7,8 @@ public class MonsterPool : MonoBehaviour
 {
     public static MonsterPool instance;  // 单例实例
     public int initialPoolSize = 10;  // 初始池大小
+    public Transform monsterMax;
+    public Transform monsterMin;
     public float yMax = 0; // 怪物初始位置的最大值
     public float yMin = 0; // 怪物初始位置的最小值
     private int monsterNumMax = 100; // 怪物数量上限
@@ -35,6 +37,8 @@ public class MonsterPool : MonoBehaviour
         {
             Destroy(gameObject);  // 如果已有实例，销毁当前对象
         }
+        yMax = monsterMax.position.y;
+        yMin = monsterMin.position.y;
     }
     void Start()
     {
@@ -81,7 +85,7 @@ public class MonsterPool : MonoBehaviour
         
         for (int i = 0; i < a; i++)
         {
-            GetMonster(Random.Range(1, 3));  // 获取怪物
+            GetMonster(Random.Range(0, monsterPrefabs.Length));  // 获取怪物
             curMonsterNum += 1;  // 更新当前怪物数量
             if (curMonsterNum >= monsterNumMax)
             {
@@ -89,28 +93,17 @@ public class MonsterPool : MonoBehaviour
             }
         }
     }
-
-    private IEnumerator GenerateMonstersEverySecond()
-    {
-        // 每秒执行一次 RandomGenerate 方法
-        while (isGenerate)
-        {
-            RandomGenerate();  // 生成怪物
-            yield return new WaitForSeconds(1f);  // 等待 1 秒
-        }
-    }
-
     /// <summary>
     /// 对外使用
     /// </summary>
-    /// <param name="monsterType">需要的怪物类型</param>
+    /// <param name="monsterId">需要的怪物类型</param>
     /// <param name="pos">生成位置</param>
-    public void GetMonster(int monsterType)
+    public void GetMonster(int monsterId)
     {
-        if (staticPool.ContainsKey(monsterType))
+        if (staticPool.ContainsKey(monsterId))
         {
-            GameObject monster = RealGetMonster(monsterType);
-            Vector3 curPos = new Vector3(-10, Random.Range(yMin, yMax), 0);
+            GameObject monster = RealGetMonster(monsterId);
+            Vector3 curPos = new Vector3(monsterMax.position.x, Random.Range(yMin, yMax), 0);
             monster.transform.position = curPos;
             monster.GetComponent<Monster>().Init();
         }
@@ -121,34 +114,34 @@ public class MonsterPool : MonoBehaviour
 
     }
     // 获取指定类型的怪物
-    private GameObject RealGetMonster(int monsterType)
+    private GameObject RealGetMonster(int monsterId)
     {
-        if (staticPool.ContainsKey(monsterType) && staticPool[monsterType].Count > 0)
+        if (staticPool.ContainsKey(monsterId) && staticPool[monsterId].Count > 0)
         {
             // 从指定类型的池中取出一个怪物
-            GameObject monster = staticPool[monsterType].Dequeue();
+            GameObject monster = staticPool[monsterId].Dequeue();
             monster.SetActive(true);  // 激活怪物
-            activatePool[monsterType].Enqueue(monster);  // 将怪物放入活动池
+            activatePool[monsterId].Enqueue(monster);  // 将怪物放入活动池
             return monster;
         }
         else
         {
             // 如果没有可用的怪物，实例化新的怪物并返回
-            GameObject newMonster = Instantiate(monsterPrefabs[monsterType]);
-            activatePool[monsterType].Enqueue(newMonster);
+            GameObject newMonster = Instantiate(monsterPrefabs[monsterId]);
+            activatePool[monsterId].Enqueue(newMonster);
             return newMonster;
         }
     }
-    public void ReturnMonster(int monsterType, GameObject monster)
+    public void ReturnMonster(int monsterId, GameObject monster)
     {
-        RealReturnMonster(monsterType, monster);
+        RealReturnMonster(monsterId, monster);
     }
     // 将怪物返回到池中
-    private void RealReturnMonster(int monsterType, GameObject monster)
+    private void RealReturnMonster(int monsterId, GameObject monster)
     {
         monster.SetActive(false);  // 禁用怪物对象
-        activatePool[monsterType].Dequeue();  // 从活动池中移除
-        staticPool[monsterType].Enqueue(monster);  // 将怪物放回不活动池
+        activatePool[monsterId].Dequeue();  // 从活动池中移除
+        staticPool[monsterId].Enqueue(monster);  // 将怪物放回不活动池
     }
     /// <summary>
     /// 应该用不上，放回所有已激活怪物

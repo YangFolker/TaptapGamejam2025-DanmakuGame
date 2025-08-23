@@ -9,6 +9,7 @@ public class Monster : MonoBehaviour
     public float speed;
     public Vector3 direction;
     public int monsterId;
+    public int monsterType;//判断怪物属于蓝色阵营还是红色阵营，默认1红2蓝
     public MonsterMovement monsterMovement;
     void Awake()
     {
@@ -47,16 +48,8 @@ public class Monster : MonoBehaviour
     /// </summary>
     public void Die()
     {
-        Debug.Log($"{gameObject.name} 死亡！");
-
-        // 这里你可以播放死亡动画，或者掉落物品
-        // 暂时直接禁用怪物，交还对象池
+        GameManger.instance.playerScore += 10;
         MonsterPool.instance.ReturnMonster(monsterId,gameObject);
-
-        // 如果你有对象池管理类，可以在这里调用 ReturnMonster()
-        // 比如：
-        // MonsterSpawner spawner = FindObjectOfType<MonsterSpawner>();
-        // spawner.ReturnMonsterToPool(gameObject);
     }
 }
 
