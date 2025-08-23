@@ -11,6 +11,7 @@ public class Monster : MonoBehaviour
     public int monsterId;
     public int monsterType;//判断怪物属于蓝色阵营还是红色阵营，默认1红2蓝
     public MonsterMovement monsterMovement;
+    private Animator animator;
     void Awake()
     {
         monsterMovement = GetComponent<MonsterMovement>();
@@ -20,6 +21,7 @@ public class Monster : MonoBehaviour
         monsterMovement.speed = speed;
         monsterMovement.dir = direction;
         monsterMovement.isMove = true;
+        animator = GetComponent<Animator>();
     }
 
     void OnEnable()
@@ -39,6 +41,7 @@ public class Monster : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            
             Die();
         }
     }
@@ -48,7 +51,28 @@ public class Monster : MonoBehaviour
     /// </summary>
     public void Die()
     {
+        monsterMovement.speed = 0;
+        animator.SetTrigger("die_trigger");
+        StartCoroutine(WaitAndDestroy());
+        //更新怪物数量
+        MonsterPool.instance.curMonsterNum -= 1;
+
+        int a = Random.Range(0, 10);
+        if (a == 2)
+        {
+
+        }
         GameManger.instance.playerScore += 10;
+        GameManger.instance.money += 10;
+        
+    }
+
+    private IEnumerator WaitAndDestroy()
+    {
+        // 获取当前动画状态信息
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        // 等待动画播放完毕
+        yield return new WaitForSeconds(stateInfo.length);
         MonsterPool.instance.ReturnMonster(monsterId,gameObject);
     }
 }

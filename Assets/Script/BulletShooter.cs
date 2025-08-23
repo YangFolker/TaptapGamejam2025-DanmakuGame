@@ -1,3 +1,4 @@
+using System.Data.SqlTypes;
 using UnityEngine;
 
 public class BulletShooter : MonoBehaviour
@@ -18,6 +19,13 @@ public class BulletShooter : MonoBehaviour
     public int bulletCount = 10;
     public Vector3 direction = Vector3.forward;
     public float bulletSpeed = 10f;
+    public SpriteRenderer sr;
+
+    public int attackCost = 1;
+    void Awake()
+    {
+        sr = GetComponent<SpriteRenderer>();
+    }
 
     void Update()
     {
@@ -26,15 +34,37 @@ public class BulletShooter : MonoBehaviour
         if (Input.GetKey(leftKey))
         {
             movement.x -= moveSpeed * Time.deltaTime;
+            if (IsMainPlayer)
+            {
+                sr.flipX = true;
+            }
+            else
+            {
+                sr.flipX = false;
+            }
         }
 
         if (Input.GetKey(rightKey))
         {
             movement.x += moveSpeed * Time.deltaTime;
+            if (IsMainPlayer)
+            {
+                sr.flipX = false;
+            }
+            else
+            {
+                sr.flipX = true;
+            }
         }
         if (Input.GetKeyDown(fireKey))
         {
-            FireBullets();
+
+            if (GameManger.instance.money >= attackCost * bulletCount)
+            {
+                GameManger.instance.money -= attackCost * bulletCount; //扣钱
+                FireBullets();
+            }
+
         }
 
         transform.Translate(movement);
@@ -63,9 +93,6 @@ public class BulletShooter : MonoBehaviour
 	        // 计算旋转后的方向（绕 z 轴旋转）
 	        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 	        Vector3 bulletDir = rotation * direction.normalized;
-            print(rotation);
-            print(direction.normalized);
-            print(bulletDir);
             GameObject bullet;
             if (transform.position.y < 0)
             {
@@ -80,7 +107,7 @@ public class BulletShooter : MonoBehaviour
                 bullet = null;
                 Debug.Log("Error: The y position of the shooter is 0.");
             }
-            Debug.Log(bullet.name);
+            //Debug.Log(bullet.name);
             Bullet bulletScript = bullet.GetComponent<Bullet>();
             if (bulletScript != null)
             {

@@ -12,7 +12,7 @@ public class MonsterPool : MonoBehaviour
     public float yMax = 0; // 怪物初始位置的最大值
     public float yMin = 0; // 怪物初始位置的最小值
     private int monsterNumMax = 100; // 怪物数量上限
-    private int curMonsterNum = 0; // 当前怪物数量
+    public int curMonsterNum = 0; // 当前怪物数量
 
     public Vector3 StartPos = Vector3.zero; // 怪物初始位置
     public GameObject[] monsterPrefabs;  // 不同类型的怪物预制体
@@ -31,7 +31,6 @@ public class MonsterPool : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);  // 保证该实例在场景切换时不被销毁
         }
         else
         {
@@ -77,7 +76,7 @@ public class MonsterPool : MonoBehaviour
 
     public void RandomGenerate()
     {
-        int a = Random.Range(0, 10);  // 随机生成怪物数量
+        int a = Random.Range(0, 4);  // 随机生成怪物数量
         if (curMonsterNum >= monsterNumMax)
         {
             return;  // 如果已达到最大怪物数量，返回

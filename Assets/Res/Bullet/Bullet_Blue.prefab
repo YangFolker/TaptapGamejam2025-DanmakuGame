@@ -73,8 +73,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -614979101
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.023584902, g: 0.5570963, b: 1, a: 1}
@@ -102,7 +102,7 @@ MonoBehaviour:
   bulletType: 2
   speed: 10
   lifetime: 5
-  explosionRadius: 2
+  explosionRadius: 0.5
   explosionDamage: 10
   explosionDuration: 2
   explosionPrefab: {fileID: 1884219408700207775, guid: 5aad084787cf9f4439813a9d815e6e03, type: 3}

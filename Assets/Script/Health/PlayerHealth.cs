@@ -21,7 +21,6 @@ public class PlayerHealth : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);  // 保证该实例在场景切换时不被销毁
         }
         else
         {
@@ -31,8 +30,8 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
-        GameManger.instance.currentHealth = GameManger.instance.maxHealth/2;  // 初始化当前血量
-        GameManger.instance.currentHealth_down = GameManger.instance.maxHealth/2;  // 初始化减少的血量
+        GameManger.instance.currentHealth = GameManger.instance.maxHealth / 2;  // 初始化当前血量
+        GameManger.instance.currentHealth_down = GameManger.instance.maxHealth / 2;  // 初始化减少的血量
 
         // 初始化浮标位置
         float initialPositionY = Mathf.Lerp(-offect, offect, (float)GameManger.instance.currentHealth / GameManger.instance.maxHealth);  // 根据初始血量计算浮标位置
@@ -53,12 +52,14 @@ public class PlayerHealth : MonoBehaviour
             if (GameManger.instance.currentHealth > 50)
             {
                 GameManger.instance.currentHealth -= 1;  // 通过掉血来减少
+                UpdateHealth( GameManger.instance.currentHealth,healthMarker);
             }
 
             // 如果 currentHealth_down 小于 50，每秒增加 1
             if (GameManger.instance.currentHealth_down < 50)
             {
                 GameManger.instance.currentHealth_down += 1;  // 通过回血来增加
+                UpdateHealth( GameManger.instance.currentHealth_down,healthMarker1);
             }
         }
     }
@@ -74,10 +75,28 @@ public class PlayerHealth : MonoBehaviour
         {
             // 回血
             GameManger.instance.currentHealth += amount;
-            GameManger.instance.currentHealth = Mathf.Clamp(GameManger.instance.currentHealth, 0, GameManger.instance.maxHealth);  // 确保血量不小于0，也不大于最大血量
+            UpdateHealth( GameManger.instance.currentHealth,healthMarker);
+        }
+        else
+        {
+            // 掉血
+            GameManger.instance.currentHealth_down -= amount;
+            UpdateHealth( GameManger.instance.currentHealth_down,healthMarker1);
+        }
+
+        
+    }
+    public void UpdateHealth(int currentHealth,RectTransform healthMarker)
+    {
+        // 游戏结束判断
+        if (GameManger.instance.currentHealth >= GameManger.instance.maxHealth || GameManger.instance.currentHealth_down <= 0)
+        {
+            GameManger.instance.GameOver();
+        }
+        currentHealth = Mathf.Clamp(currentHealth, 0, GameManger.instance.maxHealth);  // 确保血量不小于0，也不大于最大血量
 
             // 计算血条填充量（比例）
-            float targetFillAmount = (float)GameManger.instance.currentHealth / GameManger.instance.maxHealth;
+            float targetFillAmount = (float)currentHealth / GameManger.instance.maxHealth;
 
             // 使用 DOTween 平滑过渡血条变化
             healthBar.DOFillAmount(targetFillAmount, 0.5f);
@@ -88,31 +107,5 @@ public class PlayerHealth : MonoBehaviour
             // 确保浮标的动画每次都重新启动
             healthMarker.DOKill();  // 先停止之前的动画，避免重叠
             healthMarker.DOAnchorPosY(targetPositionY, 0.5f);  // 使用 DOTween 平滑过渡浮标位置
-        }
-        else
-        {
-            // 掉血
-            GameManger.instance.currentHealth_down -= amount;
-            GameManger.instance.currentHealth_down = Mathf.Clamp(GameManger.instance.currentHealth_down, 0, GameManger.instance.maxHealth);  // 确保掉血量不小于0，也不大于最大血量
-
-            // 计算血条填充量（比例）
-            float targetFillAmount = (float)GameManger.instance.currentHealth_down / GameManger.instance.maxHealth;
-
-            // 使用 DOTween 平滑过渡血条变化
-            healthBar1.DOFillAmount(targetFillAmount, 0.5f);
-
-            // 根据血量百分比平滑浮标移动
-            float targetPositionY = Mathf.Lerp(-offect, offect, targetFillAmount);  // 这里 -50f 和 50f 是浮标位置的上下范围，你可以调整
-
-            // 确保浮标的动画每次都重新启动
-            healthMarker1.DOKill();  // 先停止之前的动画，避免重叠
-            healthMarker1.DOAnchorPosY(targetPositionY, 0.5f);  // 使用 DOTween 平滑过渡浮标位置
-        }
-
-        // 游戏结束判断
-        if (GameManger.instance.currentHealth >= GameManger.instance.maxHealth || GameManger.instance.currentHealth_down <= 0)
-        {
-            GameManger.instance.GameOver();
-        }
     }
 }
