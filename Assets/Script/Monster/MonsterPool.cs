@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 
 public class MonsterPool : MonoBehaviour
@@ -20,6 +21,9 @@ public class MonsterPool : MonoBehaviour
     private float timer = 0f;  // 计时器
     public float generateInterval = 1f;  // 生成怪物的时间间隔（秒）
 
+    private int generateMinNum = 1;
+
+    private float gameTime;
     public bool isGenerate; // 是否生成怪物
 
     // 使用字典存储每种怪物类型的池
@@ -61,6 +65,7 @@ public class MonsterPool : MonoBehaviour
     }
     void Update()
     {
+        gameTime += Time.deltaTime;
         if (isGenerate)
         {
             timer += Time.deltaTime;  // 增加计时器
@@ -76,20 +81,32 @@ public class MonsterPool : MonoBehaviour
 
     public void RandomGenerate()
     {
-        int a = Random.Range(0, 4);  // 随机生成怪物数量
+        int a = Random.Range(1, monsterPrefabs.Length + 1);  // 随机生成怪物数量
+        if (generateMinNum <= monsterPrefabs.Length + 1)
+        {
+            a = Random.Range(generateMinNum, monsterPrefabs.Length + 1);
+        }
+        else
+        {
+            a = Random.Range(monsterPrefabs.Length + 1, generateMinNum);
+        }
         if (curMonsterNum >= monsterNumMax)
         {
             return;  // 如果已达到最大怪物数量，返回
         }
-        
+
         for (int i = 0; i < a; i++)
         {
-            GetMonster(Random.Range(0, monsterPrefabs.Length));  // 获取怪物
+            GetMonster(Random.Range(generateMinNum, monsterPrefabs.Length));  // 获取怪物
             curMonsterNum += 1;  // 更新当前怪物数量
             if (curMonsterNum >= monsterNumMax)
             {
                 break;  // 达到最大怪物数量时跳出循环
             }
+        }
+        if(gameTime > 20)
+        {
+            generateMinNum += 1;  // 增加生成怪物数量
         }
     }
     /// <summary>

@@ -76,7 +76,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -614979101
-  m_SortingLayer: 0
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 1575883251, guid: d13d59bade558204f91de10b51a21e10, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -104,7 +104,7 @@ MonoBehaviour:
   maxHealth: 1
   speed: 2
   direction: {x: 1, y: 0, z: 0}
-  monsterId: 0
+  monsterId: 1
   monsterType: 2
   monsterMovement: {fileID: 8306581454508562796}
 --- !u!114 &8306581454508562796

@@ -4,20 +4,15 @@ using UnityEngine;
 
 public class AddFrirendBullet : MonoBehaviour
 {
-    void OnCollisionEnter2D(Collision2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("执行了");
+        //Debug.Log("Add Frirend Bullet");
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            //Debug.Log("Add Frirend Bullet");
             bool self = collision.gameObject.GetComponent<BulletShooter>().IsMainPlayer;
-            if (self)
-            {
-                BuffManager.instance.AddBulletNum(!self, 1);
-            }
-            else
-            {
-                BuffManager.instance.AddBulletNum(self, 1);
-            }
+            BuffManager.instance.AddBulletNum(!self, 1);
+            Destroy(gameObject);
         }
     }
 }

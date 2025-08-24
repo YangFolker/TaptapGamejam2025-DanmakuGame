@@ -15,13 +15,16 @@ public class Bullet : MonoBehaviour
     public float explosionDuration = 2f;  // 爆炸持续时间
     public GameObject explosionPrefab;   // 爆炸预制体（圆形）
 
+    public bool parentType;
+
 
     // 初始化子弹的方向和速度
-    public void Initialize(Vector3 direction, float speed, float lifetime)
+    public void Initialize(Vector3 direction, float speed, float lifetime, bool parentType)
     {
         this.direction = direction.normalized;  // 确保方向是单位向量
         this.speed = speed;
         this.lifetime = lifetime;
+        this.parentType = parentType; // 设置子弹的父类型
 
         // 销毁子弹
         Destroy(gameObject, lifetime);  // 生命周期结束后销毁子弹
@@ -55,7 +58,7 @@ public class Bullet : MonoBehaviour
                 if (monster.monsterType == bulletType)
                 {
                     // 如果类型一致，则触发怪物死亡
-                    monster.Die();
+                    monster.Die(parentType);
                     Destroy(gameObject);  // 销毁子弹
                 }
             }
@@ -71,6 +74,7 @@ public class Bullet : MonoBehaviour
             if (bulletShooter != null)
             {
                 PlayerHealth.instance?.TakeDamage(10, bulletShooter.IsMainPlayer);
+                GameManger.instance.SetMoney(GameManger.instance.AttactPlayerRewait * bulletShooter.bulletCount);
                 Destroy(gameObject);  // 销毁子弹
             }
             else
@@ -154,7 +158,7 @@ public class Bullet : MonoBehaviour
                 if (monster != null)
                 {
                     // 对怪物造成伤害
-                    monster.TakeDamage(2);
+                    monster.TakeDamage(2, parentType);
                 }
             }
             if (hitCollider.gameObject.layer == LayerMask.NameToLayer("Player"))
@@ -170,11 +174,11 @@ public class Bullet : MonoBehaviour
     {
         // 创建爆炸效果
         GameObject explosion = Instantiate(explosionPrefab, position, Quaternion.identity);
-        
+
         // 设置爆炸的大小（可选）
-        explosion.transform.localScale = new Vector3(explosionRadius,explosionRadius,explosionRadius);  // 示例，设置为 2 倍大小
-        
-        // 在 explosionDuration 秒后销毁爆炸效果
-        Destroy(explosion, explosionDuration);
+        explosion.transform.localScale = new Vector3(explosionRadius, explosionRadius, explosionRadius);  // 示例，设置为 2 倍大小
+
+        // // 在 explosionDuration 秒后销毁爆炸效果
+        // Destroy(explosion, explosionDuration);
     }
 }

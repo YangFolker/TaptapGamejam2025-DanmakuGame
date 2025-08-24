@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,13 +8,16 @@ public class PanelMainUI : MonoBehaviour
 {
     public StartBtn startBtn;
     public ExitBtn exitBtn;
-    public string StartText;
-    public string ExitText;
+    public AudioSource audioSource;
 
     void Awake()
     {
-        startBtn?.Init(this, StartText);
-        exitBtn?.Init(this, ExitText);
+        startBtn?.Init(this);
+        exitBtn?.Init(this);
+    }
+    void Start()
+    {
+        audioSource?.Play();
     }
     public void LoadGame()
     {
@@ -31,6 +35,7 @@ public class PanelMainUI : MonoBehaviour
     }
     public void Hide()
     {
+
         gameObject.SetActive(false);
     }
 }
